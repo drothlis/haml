@@ -218,6 +218,15 @@ Available options are:
   set `:encoding` to `"ascii-8bit"`, or try to get the authors of the database drivers
   to make them Ruby 1.9 compatible.
 
+{#autofilter-option} `:autofilter`
+: Filter all plain-text blocks through the specified filter (e.g. markdown).
+  This is useful for hand-crafted haml pages where you want *all* content to be e.g.
+  markdown-formatted. If using markdown/textile make sure you don't nest a
+  plain-text block under a %p tag, or you'll generate nonsensical markup.
+  This has not been tested extensively -- do not use this in its current state
+  for dynamically-generated content, and always check the output.
+  See [Filters](#filters) for the list of available filters.
+
 ### Encodings
 
 When using Ruby 1.9 or later,

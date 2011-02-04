@@ -14,6 +14,10 @@
   or to be always escaped rather than `#escape_once`d.
   This can also be used from the command line via `--no-escape-attrs`.
 
+* Add an {file:HAML_REFERENCE.md#autofilter-option `:autofilter` option} that
+  causes all plain-text blocks to automatically be passed through the specified
+  filter.
+
 ### Backwards Incompatibilities -- Must Read!
 
 * Get rid of the `--rails` flag for the `haml` executable.

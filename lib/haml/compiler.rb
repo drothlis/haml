@@ -50,7 +50,12 @@ END
     end
 
     def compile_plain
-      push_text @node.value[:text]
+      if @options[:autofilter]
+        filter = Filters.defined[@options[:autofilter]]
+        filter.internal_compile(self, @node.value[:text])
+      else
+        push_text @node.value[:text]
+      end
     end
 
     def compile_script(&block)
@@ -441,8 +446,27 @@ END
       end
     end
 
+    def merge_contiguous_plain_nodes!(nodes)
+      return if nodes.length < 2
+      len = nodes.length
+      prev_node = nodes[0]
+      i = 1
+      while i < len
+        node = nodes[i]
+        if prev_node.type == :plain && node.type == :plain
+          prev_node.value[:text] += "\n#{node.value[:text]}"
+          nodes.delete_at(i)
+          len -= 1
+        else
+          i += 1
+          prev_node = node
+        end
+      end
+    end
+
     def compile(node)
       parent, @node = @node, node
+      merge_contiguous_plain_nodes!(node.children)
       block = proc {node.children.each {|c| compile c}}
       send("compile_#{node.type}", &(block unless node.children.empty?))
     ensure

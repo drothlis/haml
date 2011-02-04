@@ -231,6 +231,11 @@ END
           @options[:for_engine][:attr_wrapper] = '"'
         end
 
+        opts.on('--autofilter NAME',
+                'Filter all plain-text blocks through the specified filter (e.g. markdown).') do |name|
+          @options[:for_engine][:autofilter] = name
+        end
+
         opts.on('-r', '--require FILE', "Same as 'ruby -r'.") do |file|
           @options[:requires] << file
         end

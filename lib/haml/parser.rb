@@ -145,13 +145,13 @@ END
         end
 
         @tab_up = nil
-        process_line(@line.text, @line.index) unless @line.text.empty? || @haml_comment
+        process_line(@line.text, @line.index, @line.unstripped) unless @haml_comment
         if block_opened? || @tab_up
           @template_tabs += 1
           @parent = @parent.children.last
         end
 
-        if !flat? && @next_line.tabs - @line.tabs > 1
+        if !flat? && @next_line.tabs - @line.tabs > 1 && !@line.text.empty?
           raise SyntaxError.new("The line was indented #{@next_line.tabs - @line.tabs} levels deeper than the previous line.", @next_line.index)
         end
 
@@ -175,7 +175,7 @@ END
     #
     # This method doesn't return anything; it simply processes the line and
     # adds the appropriate code to `@precompiled`.
-    def process_line(text, index)
+    def process_line(text, index, text_unstripped)
       @index = index + 1
 
       case text[0]
@@ -205,7 +205,7 @@ END
         return push plain(text[1..-1].strip, !:escape_html) if text[1] == ?\s
         push plain(text)
       when ESCAPE; push plain(text[1..-1])
-      else; push plain(text)
+      else; push plain(@options[:autofilter] ? text_unstripped : text)
       end
     end
 
@@ -616,7 +616,7 @@ END
       @line.tabs if @line
       unless (flat? && !closes_flat?(line) && !closes_flat?(@line)) ||
           (@line && @line.text[0] == ?: && line.full =~ %r[^#{@line.full[/^\s+/]}\s])
-        return next_line if line.text.empty?
+        return next_line if line.text.empty? && (!@parent.children.last || @parent.children.last.type != :plain)
 
         handle_multiline(line)
       end
@@ -695,7 +695,7 @@ END
     end
 
     def block_opened?
-      @next_line.tabs > @line.tabs
+      @next_line.tabs > @line.tabs unless @line.text.empty?
     end
 
     # Same semantics as block_opened?, except that block_opened? uses Line#tabs,

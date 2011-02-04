@@ -109,6 +109,10 @@ module Haml
         @options[:encoding] = @options[:encoding].name
       end
 
+      if @options[:autofilter] && !Filters.defined[@options[:autofilter]]
+        raise Haml::Error, "Undefined autofilter #{@options[:autofilter]}"
+      end
+
       # :eod is a special end-of-document marker
       @template = (template.rstrip).split(/\r\n|\r|\n/) + [:eod, :eod]
       @template_index = 0
