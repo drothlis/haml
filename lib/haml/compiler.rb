@@ -416,7 +416,7 @@ END
       "\n" * [diff, 0].max
     end
 
-    # Get rid of and whitespace at the end of the buffer
+    # Get rid of any whitespace at the end of the buffer
     # or the merged text
     def rstrip_buffer!(index = -1)
       last = @to_merge[index]
