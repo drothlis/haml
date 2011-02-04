@@ -1265,6 +1265,18 @@ HTML
 HAML
   end
 
+  def test_auto_filter
+    assert_equal(<<HTML, render(<<HAML, :autofilter => 'markdown'))
+<p>Well <b>hello</b>!<br/>
+there.</p>
+<p>**Not** markdown.</p>
+HTML
+Well **hello**!  
+there.
+%p **Not** markdown.
+HAML
+  end
+
   def test_local_assigns_dont_modify_class
     assert_equal("bar\n", render("= foo", :locals => {:foo => 'bar'}))
     assert_equal(nil, defined?(foo))
