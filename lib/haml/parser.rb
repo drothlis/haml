@@ -204,7 +204,7 @@ END
         return push flat_script(text[2..-1].strip, !:escape_html) if text[1] == FLAT_SCRIPT
         return push plain(text[1..-1].strip, !:escape_html) if text[1] == ?\s
         push plain(text)
-      when ESCAPE; push plain(text[1..-1])
+      when ESCAPE; push plain((@options[:autofilter] ? text_unstripped : text)[1..-1])
       else; push plain(@options[:autofilter] ? text_unstripped : text)
       end
     end
