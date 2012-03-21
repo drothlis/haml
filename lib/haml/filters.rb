@@ -356,17 +356,17 @@ END
 
       # @see Base#render
       def render(text)
-        engine = case @required
+        engine, extensions = case @required
                  when 'rdiscount'
-                   ::RDiscount
+                   [::RDiscount, [:smart]]
                  when 'peg_markdown'
-                   ::PEGMarkdown
+                   [::PEGMarkdown, []]
                  when 'maruku'
-                   ::Maruku
+                   [::Maruku, []]
                  when 'bluecloth'
-                   ::BlueCloth
+                   [::BlueCloth, []]
                  end
-        engine.new(text).to_html
+        engine.new(text, *extensions).to_html
       end
     end
 
